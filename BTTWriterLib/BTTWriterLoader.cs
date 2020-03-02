@@ -11,6 +11,12 @@ namespace BTTWriterLib
 {
     public class BTTWriterLoader
     {
+        /// <summary>
+        /// Create a usfm document from a resource container
+        /// </summary>
+        /// <param name="resourceContainer">The resource container to get the information from</param>
+        /// <param name="onlyComplete">If set to true only chunks labeled as complete in the manifest will be included</param>
+        /// <returns>A USFM document built from the container</returns>
         public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete)
         {
             var manifest = resourceContainer.GetManifest();
@@ -45,6 +51,13 @@ namespace BTTWriterLib
             return document;
         }
 
+        /// <summary>
+        /// Load a specified chapter from the resource container
+        /// </summary>
+        /// <param name="resourceContainer">The container we are currently working with</param>
+        /// <param name="files">List of files previously extracted from the resource container</param>
+        /// <param name="chapter">The chapter to get chunks for</param>
+        /// <returns>A USFM document for the chapter</returns>
         private static USFMDocument LoadChapter(IResourceContainer resourceContainer, List<string> files, string chapter)
         {
             USFMParser parser = new USFMParser(new List<string> { "s5", "fqa*" });
@@ -63,6 +76,7 @@ namespace BTTWriterLib
                 .OrderBy(c => int.Parse(c[1]))
                 .Select(c => string.Join("-",c))
                 .ToList();
+
             foreach(var item in sortedFiles)
             {
                 string chunk = resourceContainer.GetFile(item);

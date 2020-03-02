@@ -6,9 +6,15 @@ using USFMToolsSharp.Models.Markers;
 
 namespace BTTWriterLibTests
 {
+    /// <summary>
+    /// Tests for the BTTWriterLoader class
+    /// </summary>
     [TestClass]
     public class BTTWriterLoaderTests
     {
+        /// <summary>
+        /// Verify the basic structure of the created USFM document
+        /// </summary>
         [TestMethod]
         public void BlankRender()
         {
@@ -32,6 +38,9 @@ namespace BTTWriterLibTests
             Assert.AreEqual(manifest.project.name, ((MTMarker)document.Contents[6]).Title);
         }
 
+        /// <summary>
+        /// Verify that the translated name if present overrides the name in the manifest
+        /// </summary>
         [TestMethod]
         public void TestWithTranslatedName()
         {
@@ -55,6 +64,9 @@ namespace BTTWriterLibTests
             Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Contents[4]).BookAbbreviation);
         }
 
+        /// <summary>
+        /// Tests that an untranslated chapter doesn't get a cl marker added
+        /// </summary>
         [TestMethod]
         public void TestWithUntranslatedChapterTitle()
         {
@@ -75,6 +87,9 @@ namespace BTTWriterLibTests
             Assert.AreEqual(0, document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>().Count);
         }
 
+        /// <summary>
+        /// Verify that if a chapter title has been translated that a cl marker gets added
+        /// </summary>
         [TestMethod]
         public void TestWithTranslatedChapterTitle()
         {
@@ -98,6 +113,9 @@ namespace BTTWriterLibTests
             Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
         }
 
+        /// <summary>
+        /// Verify that chapters get ordered correctly
+        /// </summary>
         [TestMethod]
         public void TestWithOutOfOrderChapter()
         {
@@ -122,6 +140,9 @@ namespace BTTWriterLibTests
             Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
         }
 
+        /// <summary>
+        /// Verify that chunks get ordered correctly
+        /// </summary>
         [TestMethod]
         public void TestWithOutOfOrderChunk()
         {
