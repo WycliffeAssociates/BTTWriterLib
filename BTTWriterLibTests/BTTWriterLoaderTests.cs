@@ -28,6 +28,8 @@ namespace BTTWriterLibTests
             Assert.AreEqual(manifest.project.name, ((TOC1Marker)document.Contents[2]).LongTableOfContentsText);
             Assert.AreEqual(manifest.project.name, ((TOC2Marker)document.Contents[3]).ShortTableOfContentsText);
             Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Contents[4]).BookAbbreviation);
+            Assert.AreEqual(manifest.project.name, ((HMarker)document.Contents[5]).HeaderText);
+            Assert.AreEqual(manifest.project.name, ((MTMarker)document.Contents[6]).Title);
         }
 
         [TestMethod]

@@ -29,6 +29,9 @@ namespace BTTWriterLib
             document.Insert(new TOC1Marker() { LongTableOfContentsText = bookName });
             document.Insert(new TOC2Marker() { ShortTableOfContentsText = bookName });
             document.Insert(new TOC3Marker() { BookAbbreviation = manifest.project.id });
+            document.Insert(new HMarker() { HeaderText = bookName });
+            document.Insert(new MTMarker() { Title = bookName });
+
             // Get a distinct list of chapters from the contents that are actually numbers
             var sortedFiles = files.Select(e => e.Split('-')[0])
                 .Distinct()
