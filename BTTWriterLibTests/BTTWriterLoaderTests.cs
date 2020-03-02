@@ -95,5 +95,53 @@ namespace BTTWriterLibTests
             Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
             Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
         }
+
+        [TestMethod]
+        public void TestWithOutOfOrderChapter()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+            var content = new Dictionary<string, string>() { 
+                ["02-01"] = "\\c 2 \\v 1 Second chapter First verse",
+                ["01-01"] = "\\c 1 \\v 1 First verse",
+                ["01-title"] = "Translated"
+            };
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
+            Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+        }
+
+        [TestMethod]
+        public void TestWithOutOfOrderChunk()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+            var content = new Dictionary<string, string>() { 
+                ["01-02"] = "\\v 2 Second chapter First verse",
+                ["01-01"] = "\\c 1 \\v 1 First verse",
+                ["01-title"] = "Translated"
+            };
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
+            Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+        }
     }
 }

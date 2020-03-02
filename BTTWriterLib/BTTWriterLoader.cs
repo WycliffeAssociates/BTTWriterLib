@@ -29,13 +29,13 @@ namespace BTTWriterLib
             document.Insert(new TOC1Marker() { LongTableOfContentsText = bookName });
             document.Insert(new TOC2Marker() { ShortTableOfContentsText = bookName });
             document.Insert(new TOC3Marker() { BookAbbreviation = manifest.project.id });
-            foreach (var item in files.Select(e => e.Split('-')[0]).Distinct())
+            // Get a distinct list of chapters from the contents that are actually numbers
+            var sortedFiles = files.Select(e => e.Split('-')[0])
+                .Distinct()
+                .Where(e => int.TryParse(e, out int _))
+                .OrderBy(e => int.Parse(e));
+            foreach (var item in sortedFiles)
             {
-                if (item == "front")
-                {
-                    continue;
-                }
-
                 document.Insert(LoadChapter(resourceContainer, files, item));
             }
 
@@ -53,12 +53,15 @@ namespace BTTWriterLib
                 chapterTitle = resourceContainer.GetFile(titleManifestName);
             }
 
-            foreach(var item in files.Where(c => c.StartsWith($"{chapter}-")).OrderBy(c => c))
+            // Break the filename out to its components, get all that are valid numbered chunks and are in our chapter, and then order them by chunks
+            // The format of the chunk names are "<chapter>-<chunk>"
+            var sortedFiles = files.Select(c => c.Split('-'))
+                .Where(c => c.Length == 2 && c[0] == chapter && int.TryParse(c[1], out int _))
+                .OrderBy(c => int.Parse(c[1]))
+                .Select(c => string.Join("-",c))
+                .ToList();
+            foreach(var item in sortedFiles)
             {
-                if (item == titleManifestName)
-                {
-                    continue;
-                }
                 string chunk = resourceContainer.GetFile(item);
                 if (chunk != null)
                 {
