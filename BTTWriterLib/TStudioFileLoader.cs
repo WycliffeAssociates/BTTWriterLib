@@ -9,11 +9,18 @@ using System.Text;
 
 namespace BTTWriterLib
 {
+    /// <summary>
+    /// Represents a TStudio/BTTWriter file resource container
+    /// </summary>
     public class TStudioFileLoader : IResourceContainer
     {
         private string filePath;
         ZipArchive archive;
         string inDirPath;
+        /// <summary>
+        /// Create an instance of the the resource container
+        /// </summary>
+        /// <param name="file">Path to the file to load</param>
         public TStudioFileLoader(string file)
         {
             filePath = file;
@@ -33,6 +40,12 @@ namespace BTTWriterLib
 
             inDirPath = mainManifest.target_translations[0].path;
         }
+
+        /// <summary>
+        /// Loads a file's contents from the TS archive
+        /// </summary>
+        /// <param name="filePath">The relative path inside of zip file</param>
+        /// <returns>The contents of the file or null if the file is missing</returns>
         private string LoadFileContents(string filePath)
         {
             if (!archive.Entries.Any(e => e.FullName == filePath))
@@ -48,6 +61,12 @@ namespace BTTWriterLib
                 }
             }
         }
+
+        /// <summary>
+        /// Get a file from the container
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public string GetFile(string fileName)
         {
             fileName = fileName.Replace("-", "/") + ".txt";
@@ -65,6 +84,10 @@ namespace BTTWriterLib
             return first.TrimEnd('/') + "/" + second.TrimStart('/');
         }
 
+        /// <summary>
+        /// Gets the manifest from the resource container
+        /// </summary>
+        /// <returns>The manifest from the container</returns>
         public BTTWriterManifest GetManifest()
         {
             var manifestText = LoadFileContents(CombinePath(inDirPath, "manifest.json"));
@@ -75,6 +98,11 @@ namespace BTTWriterLib
             return JsonConvert.DeserializeObject<BTTWriterManifest>(manifestText);
         }
 
+        /// <summary>
+        /// Get a list of files from the container
+        /// </summary>
+        /// <param name="onlyFinished">If true only files listed as complete in the manifest will be returned</param>
+        /// <returns>A list of relative file paths in the container</returns>
         public List<string> GetFiles(bool onlyFinished)
         {
             if (onlyFinished)
@@ -84,6 +112,11 @@ namespace BTTWriterLib
             return archive.Entries.Where(e => e.Name.EndsWith(".txt")).Select(e => $"{GetLastDirInPath(e.FullName)}-{Path.GetFileNameWithoutExtension(e.FullName)}").ToList();
         }
 
+        /// <summary>
+        /// Gets the last dir in a zip file path
+        /// </summary>
+        /// <param name="path">The path to get the last dir of</param>
+        /// <returns>The last dir in the path</returns>
         string GetLastDirInPath(string path)
         {
             var splitPath = path.Split('/');

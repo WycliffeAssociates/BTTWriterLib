@@ -6,9 +6,15 @@ using USFMToolsSharp.Models.Markers;
 
 namespace BTTWriterLibTests
 {
+    /// <summary>
+    /// Tests for the BTTWriterLoader class
+    /// </summary>
     [TestClass]
     public class BTTWriterLoaderTests
     {
+        /// <summary>
+        /// Verify the basic structure of the created USFM document
+        /// </summary>
         [TestMethod]
         public void BlankRender()
         {
@@ -28,8 +34,13 @@ namespace BTTWriterLibTests
             Assert.AreEqual(manifest.project.name, ((TOC1Marker)document.Contents[2]).LongTableOfContentsText);
             Assert.AreEqual(manifest.project.name, ((TOC2Marker)document.Contents[3]).ShortTableOfContentsText);
             Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Contents[4]).BookAbbreviation);
+            Assert.AreEqual(manifest.project.name, ((HMarker)document.Contents[5]).HeaderText);
+            Assert.AreEqual(manifest.project.name, ((MTMarker)document.Contents[6]).Title);
         }
 
+        /// <summary>
+        /// Verify that the translated name if present overrides the name in the manifest
+        /// </summary>
         [TestMethod]
         public void TestWithTranslatedName()
         {
@@ -53,6 +64,9 @@ namespace BTTWriterLibTests
             Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Contents[4]).BookAbbreviation);
         }
 
+        /// <summary>
+        /// Tests that an untranslated chapter doesn't get a cl marker added
+        /// </summary>
         [TestMethod]
         public void TestWithUntranslatedChapterTitle()
         {
@@ -73,6 +87,9 @@ namespace BTTWriterLibTests
             Assert.AreEqual(0, document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>().Count);
         }
 
+        /// <summary>
+        /// Verify that if a chapter title has been translated that a cl marker gets added
+        /// </summary>
         [TestMethod]
         public void TestWithTranslatedChapterTitle()
         {
@@ -85,6 +102,60 @@ namespace BTTWriterLibTests
                 }
             };
             var content = new Dictionary<string, string>() { 
+                ["01-01"] = "\\c 1 \\v 1 First verse",
+                ["01-title"] = "Translated"
+            };
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
+            Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+        }
+
+        /// <summary>
+        /// Verify that chapters get ordered correctly
+        /// </summary>
+        [TestMethod]
+        public void TestWithOutOfOrderChapter()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+            var content = new Dictionary<string, string>() { 
+                ["02-01"] = "\\c 2 \\v 1 Second chapter First verse",
+                ["01-01"] = "\\c 1 \\v 1 First verse",
+                ["01-title"] = "Translated"
+            };
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
+            Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+        }
+
+        /// <summary>
+        /// Verify that chunks get ordered correctly
+        /// </summary>
+        [TestMethod]
+        public void TestWithOutOfOrderChunk()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+            var content = new Dictionary<string, string>() { 
+                ["01-02"] = "\\v 2 Second chapter First verse",
                 ["01-01"] = "\\c 1 \\v 1 First verse",
                 ["01-title"] = "Translated"
             };

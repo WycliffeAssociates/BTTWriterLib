@@ -11,6 +11,12 @@ namespace BTTWriterLib
 {
     public class BTTWriterLoader
     {
+        /// <summary>
+        /// Create a usfm document from a resource container
+        /// </summary>
+        /// <param name="resourceContainer">The resource container to get the information from</param>
+        /// <param name="onlyComplete">If set to true only chunks labeled as complete in the manifest will be included</param>
+        /// <returns>A USFM document built from the container</returns>
         public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete)
         {
             var manifest = resourceContainer.GetManifest();
@@ -29,19 +35,29 @@ namespace BTTWriterLib
             document.Insert(new TOC1Marker() { LongTableOfContentsText = bookName });
             document.Insert(new TOC2Marker() { ShortTableOfContentsText = bookName });
             document.Insert(new TOC3Marker() { BookAbbreviation = manifest.project.id });
-            foreach (var item in files.Select(e => e.Split('-')[0]).Distinct())
-            {
-                if (item == "front")
-                {
-                    continue;
-                }
+            document.Insert(new HMarker() { HeaderText = bookName });
+            document.Insert(new MTMarker() { Title = bookName });
 
+            // Get a distinct list of chapters from the contents that are actually numbers
+            var sortedFiles = files.Select(e => e.Split('-')[0])
+                .Distinct()
+                .Where(e => int.TryParse(e, out int _))
+                .OrderBy(e => int.Parse(e));
+            foreach (var item in sortedFiles)
+            {
                 document.Insert(LoadChapter(resourceContainer, files, item));
             }
 
             return document;
         }
 
+        /// <summary>
+        /// Load a specified chapter from the resource container
+        /// </summary>
+        /// <param name="resourceContainer">The container we are currently working with</param>
+        /// <param name="files">List of files previously extracted from the resource container</param>
+        /// <param name="chapter">The chapter to get chunks for</param>
+        /// <returns>A USFM document for the chapter</returns>
         private static USFMDocument LoadChapter(IResourceContainer resourceContainer, List<string> files, string chapter)
         {
             USFMParser parser = new USFMParser(new List<string> { "s5", "fqa*" });
@@ -53,12 +69,16 @@ namespace BTTWriterLib
                 chapterTitle = resourceContainer.GetFile(titleManifestName);
             }
 
-            foreach(var item in files.Where(c => c.StartsWith($"{chapter}-")).OrderBy(c => c))
+            // Break the filename out to its components, get all that are valid numbered chunks and are in our chapter, and then order them by chunks
+            // The format of the chunk names are "<chapter>-<chunk>"
+            var sortedFiles = files.Select(c => c.Split('-'))
+                .Where(c => c.Length == 2 && c[0] == chapter && int.TryParse(c[1], out int _))
+                .OrderBy(c => int.Parse(c[1]))
+                .Select(c => string.Join("-",c))
+                .ToList();
+
+            foreach(var item in sortedFiles)
             {
-                if (item == titleManifestName)
-                {
-                    continue;
-                }
                 string chunk = resourceContainer.GetFile(item);
                 if (chunk != null)
                 {
