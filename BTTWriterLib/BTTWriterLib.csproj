@@ -5,10 +5,12 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/WycliffeAssociates/BTTWriterLib</PackageProjectUrl>
     <Copyright>2020 Wycliffe Associates</Copyright>
-    <Version>0.0.1</Version>
+    <Version>0.1.0</Version>
     <Description>A library for loading files from Bible Translation Tools Writer</Description>
     <RepositoryUrl>https://github.com/WycliffeAssociates/BTTWriterLib</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>Wycliffe Associates</Company>
+    <Authors>@rbnswartz</Authors>
   </PropertyGroup>
 
   <ItemGroup>
