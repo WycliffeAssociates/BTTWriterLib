@@ -7,7 +7,6 @@ namespace BTTWriterLib.Models
         public string language_id { get; set; }
         public string resource_id { get; set; }
         public string checking_level { get; set; }
-        public DateTime date_modified { get; set; }
         public string version { get; set; }
     }
 }
