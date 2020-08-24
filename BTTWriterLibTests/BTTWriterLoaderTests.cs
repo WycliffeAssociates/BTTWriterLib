@@ -137,7 +137,10 @@ namespace BTTWriterLibTests
 
             Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
             Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
-            Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+            var chapters = document.GetChildMarkers<CMarker>();
+            Assert.AreEqual(1, chapters[0].Number);
+            Assert.AreEqual(2, chapters[1].Number);
+            Assert.AreEqual("Translated", chapters[0].GetChildMarkers<CLMarker>()[0].Label);
         }
 
         /// <summary>
