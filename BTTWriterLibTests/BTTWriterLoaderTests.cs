@@ -102,7 +102,7 @@ namespace BTTWriterLibTests
                 }
             };
             var content = new Dictionary<string, string>() { 
-                ["01-01"] = "\\c 1 \\v 1 First verse",
+                ["01-01"] = "\\v 1 First verse",
                 ["01-title"] = "Translated"
             };
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
@@ -128,8 +128,8 @@ namespace BTTWriterLibTests
                 }
             };
             var content = new Dictionary<string, string>() { 
-                ["02-01"] = "\\c 2 \\v 1 Second chapter First verse",
-                ["01-01"] = "\\c 1 \\v 1 First verse",
+                ["02-01"] = "\\v 1 Second chapter First verse",
+                ["01-01"] = "\\v 1 First verse",
                 ["01-title"] = "Translated"
             };
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
@@ -156,7 +156,7 @@ namespace BTTWriterLibTests
             };
             var content = new Dictionary<string, string>() { 
                 ["01-02"] = "\\v 2 Second chapter First verse",
-                ["01-01"] = "\\c 1 \\v 1 First verse",
+                ["01-01"] = "\\v 1 First verse",
                 ["01-title"] = "Translated"
             };
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
