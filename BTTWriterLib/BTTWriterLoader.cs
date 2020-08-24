@@ -69,6 +69,11 @@ namespace BTTWriterLib
                 chapterTitle = resourceContainer.GetFile(titleManifestName);
             }
 
+            if (int.TryParse(chapter, out int chapterNumber))
+            {
+                output.Insert(new CMarker() { Number = chapterNumber });
+            }
+
             // Break the filename out to its components, get all that are valid numbered chunks and are in our chapter, and then order them by chunks
             // The format of the chunk names are "<chapter>-<chunk>"
             var sortedFiles = files.Select(c => c.Split('-'))
