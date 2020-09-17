@@ -69,10 +69,6 @@ namespace BTTWriterLib
                 chapterTitle = resourceContainer.GetFile(titleManifestName);
             }
 
-            if (int.TryParse(chapter, out int chapterNumber))
-            {
-                output.Insert(new CMarker() { Number = chapterNumber });
-            }
 
             // Break the filename out to its components, get all that are valid numbered chunks and are in our chapter, and then order them by chunks
             // The format of the chunk names are "<chapter>-<chunk>"
@@ -90,6 +86,16 @@ namespace BTTWriterLib
                     output.Insert(parser.ParseFromString(chunk));
                 }
             }
+
+            if (int.TryParse(chapter, out int chapterNumber) && !(output.Contents[0] is CMarker))
+            {
+                // Pull out the contents and put them into a new document with a new parent chapter
+                List<Marker> tmp = output.Contents;
+                output = new USFMDocument();
+                output.Insert(new CMarker() { Number = chapterNumber });
+                output.InsertMultiple(tmp);
+            }
+            
             
             if (chapterTitle != null)
             {

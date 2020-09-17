@@ -88,6 +88,27 @@ namespace BTTWriterLibTests
         }
 
         /// <summary>
+        /// Test that if there just so happens to be a CMarker in the source that an additional one doesn't get added
+        /// </summary>
+        [TestMethod]
+        public void TestWithChapterMarkersInChunks()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+            var content = new Dictionary<string, string>() { ["01-01"] = "\\c 1 \\v 1 First verse"};
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual(1, document.GetChildMarkers<CMarker>().Count);
+        }
+
+        /// <summary>
         /// Verify that if a chapter title has been translated that a cl marker gets added
         /// </summary>
         [TestMethod]
