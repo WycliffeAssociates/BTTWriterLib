@@ -87,7 +87,14 @@ namespace BTTWriterLib
                 string chunk = resourceContainer.GetFile(item);
                 if (chunk != null)
                 {
-                    output.Insert(parser.ParseFromString(chunk));
+                    try
+                    {
+                        output.Insert(parser.ParseFromString(chunk));
+                    }
+                    catch(Exception e)
+                    {
+                        throw new Exception($"Error loading chunk {item}: {e.Message}");
+                    }
                 }
             }
             
