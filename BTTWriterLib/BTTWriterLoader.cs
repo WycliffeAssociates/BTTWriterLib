@@ -17,8 +17,12 @@ namespace BTTWriterLib
         /// <param name="resourceContainer">The resource container to get the information from</param>
         /// <param name="onlyComplete">If set to true only chunks labeled as complete in the manifest will be included</param>
         /// <returns>A USFM document built from the container</returns>
-        public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete)
+        public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete, USFMParser parser = null)
         {
+            if (parser == null)
+            {
+                parser = new USFMParser(new List<string> { "s5", "fqa*" });
+            }
             var manifest = resourceContainer.GetManifest();
             USFMDocument document = new USFMDocument();
 
@@ -45,7 +49,7 @@ namespace BTTWriterLib
                 .OrderBy(e => int.Parse(e));
             foreach (var item in sortedFiles)
             {
-                document.Insert(LoadChapter(resourceContainer, files, item));
+                document.Insert(LoadChapter(resourceContainer, files, item, parser));
             }
 
             return document;
@@ -58,9 +62,8 @@ namespace BTTWriterLib
         /// <param name="files">List of files previously extracted from the resource container</param>
         /// <param name="chapter">The chapter to get chunks for</param>
         /// <returns>A USFM document for the chapter</returns>
-        private static USFMDocument LoadChapter(IResourceContainer resourceContainer, List<string> files, string chapter)
+        private static USFMDocument LoadChapter(IResourceContainer resourceContainer, List<string> files, string chapter, USFMParser parser)
         {
-            USFMParser parser = new USFMParser(new List<string> { "s5", "fqa*" });
             USFMDocument output = new USFMDocument();
             string titleManifestName = $"{chapter}-title";
             string chapterTitle = null;
