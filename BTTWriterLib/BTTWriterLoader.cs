@@ -97,7 +97,8 @@ namespace BTTWriterLib
                 }
             }
 
-            if (int.TryParse(chapter, out int chapterNumber) && !(output.Contents[0] is CMarker))
+
+            if (int.TryParse(chapter, out int chapterNumber) && !(output.Contents.Count != 0 && output.Contents[0] is CMarker))
             {
                 // Pull out the contents and put them into a new document with a new parent chapter
                 List<Marker> tmp = output.Contents;

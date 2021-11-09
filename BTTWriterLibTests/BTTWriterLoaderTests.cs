@@ -2,6 +2,7 @@ using BTTWriterLib;
 using BTTWriterLib.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using USFMToolsSharp;
 using USFMToolsSharp.Models.Markers;
 
 namespace BTTWriterLibTests
@@ -189,6 +190,78 @@ namespace BTTWriterLibTests
             Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
             Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
             Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+        }
+
+        /// <summary>
+        /// Verify that if a chapter exists in a chunk then don't add an additional one
+        /// </summary>
+        [TestMethod]
+        public void TestWithExistingChapter()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+
+            var content = new Dictionary<string, string>() { 
+                ["01-01"] = "\\c 1 \\v 2 Second chapter First verse",
+            };
+
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual(1, document.GetChildMarkers<CMarker>().Count);
+        }
+
+        /// <summary>
+        /// Verify that a blank chunk won't crash
+        /// </summary>
+        [TestMethod]
+        public void TestWithBlankContent()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+
+            var content = new Dictionary<string, string>() { 
+                ["01-01"] = "",
+            };
+
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+        }
+
+        /// <summary>
+        /// Test manual configuration of USFMParser
+        /// </summary>
+        [TestMethod]
+        public void TestWithManualParserConfiguration()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+
+            var content = new Dictionary<string, string>() { 
+                ["01-01"] = "\\v 1 \\b",
+            };
+
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false, new USFMParser(new List<string>() { "b"}));
+            Assert.AreEqual(0, document.GetChildMarkers<BMarker>().Count);
         }
     }
 }
