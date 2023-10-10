@@ -104,17 +104,17 @@ namespace BTTWriterLib
                 List<Marker> tmp = output.Contents;
                 output = new USFMDocument();
                 output.Insert(new CMarker() { Number = chapterNumber });
-                output.InsertMultiple(tmp);
-            }
-            
-            
-            if (chapterTitle != null)
-            {
-                var chapters = output.GetChildMarkers<CMarker>();
-                if (chapters.Count == 1)
+
+                if (chapterTitle != null)
                 {
-                    chapters[0].TryInsert(new CLMarker() { Label = chapterTitle });
+                    var chapters = output.GetChildMarkers<CMarker>();
+                    if (chapters.Count == 1)
+                    {
+                        chapters[0].TryInsert(new CLMarker() { Label = chapterTitle });
+                    }
                 }
+
+                output.InsertMultiple(tmp);
             }
 
             return output;
