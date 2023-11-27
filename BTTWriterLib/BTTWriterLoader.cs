@@ -114,6 +114,8 @@ namespace BTTWriterLib
                     }
                 }
 
+                output.Insert(new PMarker());
+
                 output.InsertMultiple(tmp);
             }
 
