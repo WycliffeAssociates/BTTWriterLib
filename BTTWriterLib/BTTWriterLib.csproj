@@ -4,8 +4,8 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/WycliffeAssociates/BTTWriterLib</PackageProjectUrl>
-    <Copyright>2020 Wycliffe Associates</Copyright>
-    <Version>0.6.0</Version>
+    <Copyright>2023 Wycliffe Associates</Copyright>
+    <Version>0.7.0</Version>
     <Description>A library for loading files from Bible Translation Tools Writer</Description>
     <RepositoryUrl>https://github.com/WycliffeAssociates/BTTWriterLib</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
