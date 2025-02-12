@@ -1,11 +1,10 @@
 ﻿using BTTWriterLib.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 
 namespace BTTWriterLib
 {
@@ -18,7 +17,7 @@ namespace BTTWriterLib
         ZipArchive archive;
         string inDirPath;
         /// <summary>
-        /// Create an instance of the the resource container
+        /// Create an instance of the resource container
         /// </summary>
         /// <param name="file">Path to the file to load</param>
         public TStudioFileLoader(string file)
@@ -31,7 +30,7 @@ namespace BTTWriterLib
                 throw new Exception("File is missing a manifest");
             }
 
-            var mainManifest = JsonConvert.DeserializeObject<BTTWriterManifest>(mainManifestText);
+            var mainManifest = JsonSerializer.Deserialize(mainManifestText, JsonContext.Default.BTTWriterManifest);
 
             if (mainManifest.target_translations.Length == 0)
             {
@@ -95,7 +94,7 @@ namespace BTTWriterLib
             {
                 throw new Exception($"No manifest found in {inDirPath}");
             }
-            return JsonConvert.DeserializeObject<BTTWriterManifest>(manifestText);
+            return JsonSerializer.Deserialize(manifestText, JsonContext.Default.BTTWriterManifest);
         }
 
         /// <summary>

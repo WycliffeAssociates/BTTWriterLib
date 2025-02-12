@@ -1,10 +1,9 @@
 ﻿using BTTWriterLib.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 
 namespace BTTWriterLib
 {
@@ -58,7 +57,7 @@ namespace BTTWriterLib
                     throw new FileNotFoundException($"Could not load manifest {path}");
                 }
                 var contents = File.ReadAllText(path);
-                return JsonConvert.DeserializeObject<BTTWriterManifest>(contents) ;
+                return JsonSerializer.Deserialize(contents, JsonContext.Default.BTTWriterManifest); ;
             }
             catch (Exception ex)
             {
