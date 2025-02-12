@@ -1,8 +1,6 @@
 ﻿using BTTWriterLib.Models;
 using System;
-using System.IO;
 using USFMToolsSharp.Models.Markers;
-using Newtonsoft.Json;
 using USFMToolsSharp;
 using System.Collections.Generic;
 using System.Linq;
