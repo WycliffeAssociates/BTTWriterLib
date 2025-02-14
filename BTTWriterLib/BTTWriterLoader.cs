@@ -107,24 +107,27 @@ namespace BTTWriterLib
                 // Pull out the contents and put them into a new document with a new parent chapter
                 currentChapter = new CMarker() { Number = chapterNumber };
                 output.Insert(currentChapter);
-                output.InsertMultiple(currentContents);
+            }
+            else
+            {
+                if (currentChapter != null)
+                {
+                    output.Insert(currentChapter);
+                    currentContents = currentChapter.Contents;
+                    currentChapter.Contents = [];
+                }
             }
 
             if (currentChapter != null)
             {
                 if (chapterTitle != null)
                 {
-                    currentChapter.Contents = [new CLMarker { Label = chapterTitle }, new PMarker(), .. currentChapter.Contents];
-                }
-                else
-                {
-                    currentChapter.Contents = [new PMarker(), .. currentChapter.Contents];
+                    output.Insert(new CLMarker() { Label = chapterTitle });
                 }
             }
-            else
-            {
-                output.InsertMultiple(currentContents);
-            }
+            output.Insert(new PMarker());
+            
+            output.InsertMultiple(currentContents);
 
             return output;
         }
