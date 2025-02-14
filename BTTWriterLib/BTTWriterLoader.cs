@@ -96,25 +96,34 @@ namespace BTTWriterLib
             }
 
 
-            if (int.TryParse(chapter, out int chapterNumber) && !(output.Contents.Count != 0 && output.Contents[0] is CMarker))
+            // Time to rewrite the world
+            var currentContents = output.Contents;
+            output = new USFMDocument();
+            var currentChapter = currentContents.Count != 0 && currentContents[0] is CMarker
+                ? currentContents[0] as CMarker
+                : null;
+            if (int.TryParse(chapter, out int chapterNumber) && currentChapter == null)
             {
                 // Pull out the contents and put them into a new document with a new parent chapter
-                List<Marker> tmp = output.Contents;
-                output = new USFMDocument();
-                output.Insert(new CMarker() { Number = chapterNumber });
+                currentChapter = new CMarker() { Number = chapterNumber };
+                output.Insert(currentChapter);
+                output.InsertMultiple(currentContents);
+            }
 
+            if (currentChapter != null)
+            {
                 if (chapterTitle != null)
                 {
-                    var chapters = output.GetChildMarkers<CMarker>();
-                    if (chapters.Count == 1)
-                    {
-                        chapters[0].TryInsert(new CLMarker() { Label = chapterTitle });
-                    }
+                    currentChapter.Contents = [new CLMarker { Label = chapterTitle }, new PMarker(), .. currentChapter.Contents];
                 }
-
-                output.Insert(new PMarker());
-
-                output.InsertMultiple(tmp);
+                else
+                {
+                    currentChapter.Contents = [new PMarker(), .. currentChapter.Contents];
+                }
+            }
+            else
+            {
+                output.InsertMultiple(currentContents);
             }
 
             return output;
