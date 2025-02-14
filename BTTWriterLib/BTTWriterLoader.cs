@@ -96,15 +96,18 @@ namespace BTTWriterLib
             }
 
 
-            // Time to rewrite the world
+            // We need to move some of the output around so that we make sure we have things such as CMarker, CLMarker, and PMarker
+            
             var currentContents = output.Contents;
             output = new USFMDocument();
+            
+            // If a chapter doesn't exist then insert it otherwise pull out the contents to insert later
             var currentChapter = currentContents.Count != 0 && currentContents[0] is CMarker
                 ? currentContents[0] as CMarker
                 : null;
-            if (int.TryParse(chapter, out int chapterNumber) && currentChapter == null)
+            
+            if (int.TryParse(chapter, out var chapterNumber) && currentChapter == null)
             {
-                // Pull out the contents and put them into a new document with a new parent chapter
                 currentChapter = new CMarker() { Number = chapterNumber };
                 output.Insert(currentChapter);
             }
@@ -118,6 +121,7 @@ namespace BTTWriterLib
                 }
             }
 
+            // Insert in chapter label if there is one
             if (currentChapter != null)
             {
                 if (chapterTitle != null)
@@ -125,6 +129,9 @@ namespace BTTWriterLib
                     output.Insert(new CLMarker() { Label = chapterTitle });
                 }
             }
+            
+            // Finally add a new paragraph marker and the rest of the contents
+            
             output.Insert(new PMarker());
             
             output.InsertMultiple(currentContents);
