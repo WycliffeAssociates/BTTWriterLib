@@ -39,7 +39,7 @@ jobs:
     - name: Push to Nuget if tagged
       if: contains( github.ref, 'refs/tags/v' )
       run:  |
-        cd ./USFMToolsSharp/bin/Release/ && \
+        cd ./BTTWriterLib/bin/Release/ && \
         PKG_NAME=$(ls *.nupkg) && \
         dotnet nuget push $PKG_NAME -k $NUGET_TOKEN -s https://api.nuget.org/v3/index.json
       env:
