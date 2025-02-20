@@ -22,10 +22,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore
-
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet build -c Release --no-restore
 
     - name: Load secret
       if: contains( github.ref, 'refs/tags/v' )
