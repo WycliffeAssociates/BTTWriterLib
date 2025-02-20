@@ -12,6 +12,7 @@
     <Company>Wycliffe Associates</Company>
     <Authors>@rbnswartz</Authors>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

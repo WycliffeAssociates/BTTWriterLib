@@ -89,27 +89,6 @@ namespace BTTWriterLibTests
         }
 
         /// <summary>
-        /// Test that if there just so happens to be a CMarker in the source that an additional one doesn't get added
-        /// </summary>
-        [TestMethod]
-        public void TestWithChapterMarkersInChunks()
-        {
-            var manifest = new BTTWriterManifest()
-            {
-                project = new IdNameCombo()
-                {
-                    id = "EXO",
-                    name = "Exodus"
-                }
-            };
-            var content = new Dictionary<string, string>() { ["01-01"] = "\\c 1 \\v 1 First verse"};
-            IResourceContainer container = new TestResourceContainer(manifest,content, false);
-            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
-
-            Assert.AreEqual(1, document.GetChildMarkers<CMarker>().Count);
-        }
-
-        /// <summary>
         /// Verify that if a chapter title has been translated that a cl marker gets added
         /// </summary>
         [TestMethod]
@@ -262,6 +241,35 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false, new USFMParser(new List<string>() { "b"}));
             Assert.AreEqual(0, document.GetChildMarkers<BMarker>().Count);
+        }
+
+        [TestMethod]
+        public void TestParagraphExists()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+
+            var content = new Dictionary<string, string>() { 
+                ["01-01"] = @"\c 1 \v 1 Verse contents",
+                ["02-01"] = @"\v 1 Second Chapter contents",
+                ["03-01"] = @"\c 3 \v 1 Third Chapter contents",
+            };
+
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+            var chapters = document.GetChildMarkers<CMarker>();
+            var firstChapter = chapters[0];
+            var secondChapter = chapters[1];
+            var thirdChapter = chapters[2];
+            Assert.IsTrue(firstChapter.Contents[0] is PMarker);
+            Assert.IsTrue(secondChapter.Contents[0] is PMarker);
+            Assert.IsTrue(thirdChapter.Contents[0] is PMarker);
         }
     }
 }
