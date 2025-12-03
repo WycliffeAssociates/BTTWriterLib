@@ -32,11 +32,11 @@ namespace BTTWriterLib
 
             var files = resourceContainer.GetFiles(onlyComplete);
 
-            document.Insert(new IDMarker() { TextIdentifier = manifest.project.id });
+            document.Insert(new IDMarker() { TextIdentifier = manifest.project.id.ToUpperInvariant() });
             document.Insert(new IDEMarker() { Encoding = "UTF-8" });
             document.Insert(new TOC1Marker() { LongTableOfContentsText = bookName });
             document.Insert(new TOC2Marker() { ShortTableOfContentsText = bookName });
-            document.Insert(new TOC3Marker() { BookAbbreviation = manifest.project.id });
+            document.Insert(new TOC3Marker() { BookAbbreviation = manifest.project.id.ToUpperInvariant() });
             document.Insert(new HMarker() { HeaderText = bookName });
             document.Insert(new MTMarker() { Title = bookName });
 
