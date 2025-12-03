@@ -15,7 +15,7 @@ namespace BTTWriterLib
         /// <param name="resourceContainer">The resource container to get the information from</param>
         /// <param name="onlyComplete">If set to true only chunks labeled as complete in the manifest will be included</param>
         /// <returns>A USFM document built from the container</returns>
-        public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete, USFMParser parser = null)
+        public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete, USFMParser? parser = null)
         {
             if (parser == null)
             {
