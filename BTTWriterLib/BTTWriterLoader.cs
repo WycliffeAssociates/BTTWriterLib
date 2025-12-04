@@ -15,7 +15,7 @@ namespace BTTWriterLib
         /// <param name="resourceContainer">The resource container to get the information from</param>
         /// <param name="onlyComplete">If set to true only chunks labeled as complete in the manifest will be included</param>
         /// <returns>A USFM document built from the container</returns>
-        public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete, USFMParser parser = null)
+        public static USFMDocument CreateUSFMDocumentFromContainer(IResourceContainer resourceContainer, bool onlyComplete, USFMParser? parser = null)
         {
             if (parser == null)
             {
@@ -32,11 +32,11 @@ namespace BTTWriterLib
 
             var files = resourceContainer.GetFiles(onlyComplete);
 
-            document.Insert(new IDMarker() { TextIdentifier = manifest.project.id });
+            document.Insert(new IDMarker() { TextIdentifier = manifest.project.id.ToUpperInvariant() });
             document.Insert(new IDEMarker() { Encoding = "UTF-8" });
             document.Insert(new TOC1Marker() { LongTableOfContentsText = bookName });
             document.Insert(new TOC2Marker() { ShortTableOfContentsText = bookName });
-            document.Insert(new TOC3Marker() { BookAbbreviation = manifest.project.id });
+            document.Insert(new TOC3Marker() { BookAbbreviation = manifest.project.id.ToUpperInvariant() });
             document.Insert(new HMarker() { HeaderText = bookName });
             document.Insert(new MTMarker() { Title = bookName });
 

@@ -271,5 +271,49 @@ namespace BTTWriterLibTests
             Assert.IsTrue(secondChapter.Contents[0] is PMarker);
             Assert.IsTrue(thirdChapter.Contents[0] is PMarker);
         }
+
+        /// <summary>
+        /// Verify that book identifiers are converted to uppercase in USFM markers
+        /// </summary>
+        [TestMethod]
+        public void TestBookIdentifierIsUppercase()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "exo",
+                    name = "Exodus"
+                }
+            };
+            var content = new Dictionary<string, string>();
+            IResourceContainer container = new TestResourceContainer(manifest, content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual("EXO", ((IDMarker)document.Contents[0]).TextIdentifier);
+            Assert.AreEqual("EXO", ((TOC3Marker)document.Contents[4]).BookAbbreviation);
+        }
+
+        /// <summary>
+        /// Verify that mixed case book identifiers are converted to uppercase in USFM markers
+        /// </summary>
+        [TestMethod]
+        public void TestMixedCaseBookIdentifierIsUppercase()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "Exo",
+                    name = "Exodus"
+                }
+            };
+            var content = new Dictionary<string, string>();
+            IResourceContainer container = new TestResourceContainer(manifest, content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+
+            Assert.AreEqual("EXO", ((IDMarker)document.Contents[0]).TextIdentifier);
+            Assert.AreEqual("EXO", ((TOC3Marker)document.Contents[4]).BookAbbreviation);
+        }
     }
 }
