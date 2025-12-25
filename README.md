@@ -256,7 +256,7 @@ If you find a bug or have a feature request:
 
 This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
 
-Copyright 2025 Wycliffe Associates
+Copyright (c) 2020 Wycliffe Associates
 
 ## Project Information
 
