@@ -228,13 +228,6 @@ We welcome contributions to BTTWriterLib! Here's how you can help:
 3. Ensure your PR description clearly describes the problem and solution
 4. Link any relevant issues in your PR description
 
-### Code Style
-
-- Follow existing code conventions in the project
-- Use meaningful variable and method names
-- Add XML documentation comments for public APIs
-- Keep methods focused and concise
-
 ### Testing Guidelines
 
 - Write unit tests for all new functionality
@@ -256,11 +249,4 @@ If you find a bug or have a feature request:
 
 This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
 
-Copyright (c) 2020 Wycliffe Associates
-
-## Project Information
-
-- **Repository**: [https://github.com/WycliffeAssociates/BTTWriterLib](https://github.com/WycliffeAssociates/BTTWriterLib)
-- **NuGet Package**: [BTTWriterLib](https://www.nuget.org/packages/BTTWriterLib/)
-- **Target Framework**: .NET Standard 2.0
-- **Version**: 0.10.1
+Copyright (c) 2025 Wycliffe Associates
