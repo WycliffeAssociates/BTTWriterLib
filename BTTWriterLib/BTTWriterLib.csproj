@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/WycliffeAssociates/BTTWriterLib</PackageProjectUrl>
     <Copyright>2025 Wycliffe Associates</Copyright>
@@ -16,9 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
-    <PackageReference Include="USFMToolsSharp" Version="1.7.0" />
+    <PackageReference Include="USFMToolsSharp" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>

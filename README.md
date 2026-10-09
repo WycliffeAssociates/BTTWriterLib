@@ -1,6 +1,6 @@
 # BTTWriterLib
 
-A .NET Standard 2.0 library for reading and processing files from Bible Translation Tools Writer (BTTWriter/translationStudio). This library provides utilities to load translation projects and convert them to USFM format.
+A .NET 10 library for reading and processing files from Bible Translation Tools Writer (BTTWriter/translationStudio). This library provides utilities to load translation projects and convert them to USFM format.
 
 ## Overview
 
@@ -10,6 +10,11 @@ BTTWriterLib enables you to:
 - Parse project manifests and translation chunks
 - Generate USFM documents from translation data
 - Filter content based on completion status
+
+## Requirements
+
+- .NET 10
+- [USFMToolsSharp](https://www.nuget.org/packages/USFMToolsSharp) 2.x. Documents returned by `BTTWriterLoader` use the 2.x hierarchy model, so walk them through `document.Hierarchies[0]` rather than the obsolete `document.Contents`.
 
 ## Installation
 
@@ -75,9 +80,6 @@ using (var fileLoader = new TStudioFileLoader("/path/to/project.tstudio"))
         fileLoader, 
         onlyComplete: true
     );
-    
-    // Export to USFM string
-    string usfmContent = usfmDoc.ToString();
 }
 ```
 
@@ -98,15 +100,15 @@ var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(
     parser: customParser
 );
 
-// Access USFM markers
-var chapters = document.GetChildMarkers<CMarker>();
+// Walk the marker hierarchy (USFMToolsSharp 2.x)
+var chapters = document.Hierarchies[0].GetChildMarkers<CMarker>();
 foreach (var chapter in chapters)
 {
-    Console.WriteLine($"Chapter {chapter.Number}");
+    Console.WriteLine($"Chapter {chapter.As<CMarker>().Number}");
 }
 
-// Convert to USFM string
-string usfm = document.ToString();
+// Or scan the flat list of every marker in document order
+var verseCount = document.AllMarkers.OfType<VMarker>().Count();
 ```
 
 ### Accessing Manifest Information
@@ -141,7 +143,7 @@ foreach (var chunk in manifest.finished_chunks)
 
 ### Prerequisites
 
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download) or later
+- [.NET SDK 10.0](https://dotnet.microsoft.com/download) or later
 - Git
 
 ### Build Steps
@@ -244,6 +246,10 @@ If you find a bug or have a feature request:
    - Steps to reproduce (for bugs)
    - Expected vs actual behavior
    - Your environment details (.NET version, OS, etc.)
+
+## Publishing
+
+Pushing a tag that starts with `v` (e.g. `v0.11.0`) builds, tests, and publishes the package to NuGet via [trusted publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing). The `.github/workflows/master.yaml` workflow authenticates with OIDC (`NuGet/login`), so no API key is stored; it only needs a `NUGET_USER` repository secret containing the nuget.org profile name.
 
 ## License
 
