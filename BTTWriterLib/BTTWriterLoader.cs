@@ -24,11 +24,7 @@ namespace BTTWriterLib
             var manifest = resourceContainer.GetManifest();
             USFMDocument document = new USFMDocument();
 
-            string bookName = resourceContainer.GetFile("front-title");
-            if (bookName == null)
-            {
-                bookName = manifest.project.name;
-            }
+            var bookName = resourceContainer.GetFile("front-title") ?? manifest.project.name;
 
             var files = resourceContainer.GetFiles(onlyComplete);
 
@@ -64,7 +60,7 @@ namespace BTTWriterLib
         {
             USFMDocument output = new USFMDocument();
             string titleManifestName = $"{chapter}-title";
-            string chapterTitle = null;
+            string? chapterTitle = null;
             if (files.Contains(titleManifestName)) 
             {
                 chapterTitle = resourceContainer.GetFile(titleManifestName);
@@ -79,14 +75,16 @@ namespace BTTWriterLib
                 .Select(c => string.Join("-",c))
                 .ToList();
 
+            // Collect the markers from every chunk in order so we can rearrange them before building the hierarchy
+            var chunkMarkers = new List<Marker>();
             foreach(var item in sortedFiles)
             {
-                string chunk = resourceContainer.GetFile(item);
+                var chunk = resourceContainer.GetFile(item);
                 if (chunk != null)
                 {
                     try
                     {
-                        output.Insert(parser.ParseFromString(chunk));
+                        chunkMarkers.AddRange(parser.ParseFromString(chunk).AllMarkers);
                     }
                     catch(Exception e)
                     {
@@ -95,46 +93,37 @@ namespace BTTWriterLib
                 }
             }
 
-
             // We need to move some of the output around so that we make sure we have things such as CMarker, CLMarker, and PMarker
-            
-            var currentContents = output.Contents;
-            output = new USFMDocument();
-            
-            // If a chapter doesn't exist then insert it otherwise pull out the contents to insert later
-            var currentChapter = currentContents.Count != 0 && currentContents[0] is CMarker
-                ? currentContents[0] as CMarker
-                : null;
-            
-            if (int.TryParse(chapter, out var chapterNumber) && currentChapter == null)
-            {
-                currentChapter = new CMarker() { Number = chapterNumber };
-                output.Insert(currentChapter);
-            }
-            else
-            {
-                if (currentChapter != null)
-                {
-                    output.Insert(currentChapter);
-                    currentContents = currentChapter.Contents;
-                    currentChapter.Contents = [];
-                }
-            }
 
-            // Insert in chapter label if there is one
+            // If a chapter doesn't exist then insert it otherwise pull it out to insert first
+            var currentChapter = chunkMarkers.Count != 0 ? chunkMarkers[0] as CMarker : null;
             if (currentChapter != null)
             {
+                chunkMarkers.RemoveAt(0);
+            }
+            else if (int.TryParse(chapter, out var chapterNumber))
+            {
+                currentChapter = new CMarker() { Number = chapterNumber };
+            }
+
+            if (currentChapter != null)
+            {
+                output.Insert(currentChapter);
+
+                // Insert in chapter label if there is one
                 if (chapterTitle != null)
                 {
                     output.Insert(new CLMarker() { Label = chapterTitle });
                 }
             }
-            
+
             // Finally add a new paragraph marker and the rest of the contents
-            
             output.Insert(new PMarker());
-            
-            output.InsertMultiple(currentContents);
+
+            foreach (var marker in chunkMarkers)
+            {
+                output.Insert(marker);
+            }
 
             return output;
         }

@@ -30,13 +30,13 @@ namespace BTTWriterLibTests
             var content = new Dictionary<string, string>();
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
-            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
-            Assert.AreEqual(manifest.project.name, ((TOC1Marker)document.Contents[2]).LongTableOfContentsText);
-            Assert.AreEqual(manifest.project.name, ((TOC2Marker)document.Contents[3]).ShortTableOfContentsText);
-            Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Contents[4]).BookAbbreviation);
-            Assert.AreEqual(manifest.project.name, ((HMarker)document.Contents[5]).HeaderText);
-            Assert.AreEqual(manifest.project.name, ((MTMarker)document.Contents[6]).Title);
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Hierarchies[0][0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Hierarchies[0][1]).Encoding);
+            Assert.AreEqual(manifest.project.name, ((TOC1Marker)document.Hierarchies[0][2]).LongTableOfContentsText);
+            Assert.AreEqual(manifest.project.name, ((TOC2Marker)document.Hierarchies[0][3]).ShortTableOfContentsText);
+            Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Hierarchies[0][4]).BookAbbreviation);
+            Assert.AreEqual(manifest.project.name, ((HMarker)document.Hierarchies[0][5]).HeaderText);
+            Assert.AreEqual(manifest.project.name, ((MTMarker)document.Hierarchies[0][6]).Title);
         }
 
         /// <summary>
@@ -58,11 +58,11 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
-            Assert.AreEqual(translatedName, ((TOC1Marker)document.Contents[2]).LongTableOfContentsText);
-            Assert.AreEqual(translatedName, ((TOC2Marker)document.Contents[3]).ShortTableOfContentsText);
-            Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Contents[4]).BookAbbreviation);
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Hierarchies[0][0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Hierarchies[0][1]).Encoding);
+            Assert.AreEqual(translatedName, ((TOC1Marker)document.Hierarchies[0][2]).LongTableOfContentsText);
+            Assert.AreEqual(translatedName, ((TOC2Marker)document.Hierarchies[0][3]).ShortTableOfContentsText);
+            Assert.AreEqual(manifest.project.id, ((TOC3Marker)document.Hierarchies[0][4]).BookAbbreviation);
         }
 
         /// <summary>
@@ -83,9 +83,9 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
-            Assert.AreEqual(0, document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>().Count);
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Hierarchies[0][0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Hierarchies[0][1]).Encoding);
+            Assert.AreEqual(0, document.Hierarchies[0].GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>().Count);
         }
 
         /// <summary>
@@ -109,9 +109,9 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
-            Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Hierarchies[0][0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Hierarchies[0][1]).Encoding);
+            Assert.AreEqual("Translated", document.Hierarchies[0].GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].As<CLMarker>().Label);
         }
 
         /// <summary>
@@ -136,12 +136,12 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
-            var chapters = document.GetChildMarkers<CMarker>();
-            Assert.AreEqual(1, chapters[0].Number);
-            Assert.AreEqual(2, chapters[1].Number);
-            Assert.AreEqual("Translated", chapters[0].GetChildMarkers<CLMarker>()[0].Label);
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Hierarchies[0][0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Hierarchies[0][1]).Encoding);
+            var chapters = document.Hierarchies[0].GetChildMarkers<CMarker>();
+            Assert.AreEqual(1, chapters[0].As<CMarker>().Number);
+            Assert.AreEqual(2, chapters[1].As<CMarker>().Number);
+            Assert.AreEqual("Translated", chapters[0].GetChildMarkers<CLMarker>()[0].As<CLMarker>().Label);
         }
 
         /// <summary>
@@ -166,9 +166,9 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("UTF-8", ((IDEMarker)document.Contents[1]).Encoding);
-            Assert.AreEqual("Translated", document.GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].Label);
+            Assert.AreEqual(manifest.project.id, ((IDMarker)document.Hierarchies[0][0]).TextIdentifier);
+            Assert.AreEqual("UTF-8", ((IDEMarker)document.Hierarchies[0][1]).Encoding);
+            Assert.AreEqual("Translated", document.Hierarchies[0].GetChildMarkers<CMarker>()[0].GetChildMarkers<CLMarker>()[0].As<CLMarker>().Label);
         }
 
         /// <summary>
@@ -187,13 +187,13 @@ namespace BTTWriterLibTests
             };
 
             var content = new Dictionary<string, string>() { 
-                ["01-01"] = "\\c 1 \\v 2 Second chapter First verse",
+                ["01-01"] = @"\c 1 \v 2 Second chapter First verse",
             };
 
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual(1, document.GetChildMarkers<CMarker>().Count);
+            Assert.AreEqual(1, document.Hierarchies[0].GetChildMarkers<CMarker>().Count);
         }
 
         /// <summary>
@@ -235,12 +235,12 @@ namespace BTTWriterLibTests
             };
 
             var content = new Dictionary<string, string>() { 
-                ["01-01"] = "\\v 1 \\b",
+                ["01-01"] = @"\v 1 \b",
             };
 
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
-            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false, new USFMParser(new List<string>() { "b"}));
-            Assert.AreEqual(0, document.GetChildMarkers<BMarker>().Count);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false, new USFMParser(["b"]));
+            Assert.AreEqual(0, document.Hierarchies[0].GetChildMarkers<BMarker>().Count);
         }
 
         [TestMethod]
@@ -263,13 +263,44 @@ namespace BTTWriterLibTests
 
             IResourceContainer container = new TestResourceContainer(manifest,content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
-            var chapters = document.GetChildMarkers<CMarker>();
+            var chapters = document.Hierarchies[0].GetChildMarkers<CMarker>();
             var firstChapter = chapters[0];
             var secondChapter = chapters[1];
             var thirdChapter = chapters[2];
-            Assert.IsTrue(firstChapter.Contents[0] is PMarker);
-            Assert.IsTrue(secondChapter.Contents[0] is PMarker);
-            Assert.IsTrue(thirdChapter.Contents[0] is PMarker);
+            Assert.IsTrue(firstChapter.Contents[0].Marker is PMarker);
+            Assert.IsTrue(secondChapter.Contents[0].Marker is PMarker);
+            Assert.IsTrue(thirdChapter.Contents[0].Marker is PMarker);
+        }
+
+        /// <summary>
+        /// Verify that a chapter split across multiple chunks only gets a single chapter, label, and paragraph inserted
+        /// </summary>
+        [TestMethod]
+        public void TestMultipleChunksInChapter()
+        {
+            var manifest = new BTTWriterManifest()
+            {
+                project = new IdNameCombo()
+                {
+                    id = "EXO",
+                    name = "Exodus"
+                }
+            };
+
+            var content = new Dictionary<string, string>() {
+                ["01-title"] = "Translated",
+                ["01-01"] = @"\c 1 \v 1 First verse",
+                ["01-02"] = @"\v 2 Second verse",
+                ["01-03"] = @"\v 3 Third verse",
+            };
+
+            IResourceContainer container = new TestResourceContainer(manifest,content, false);
+            var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
+            var chapters = document.Hierarchies[0].GetChildMarkers<CMarker>();
+            Assert.AreEqual(1, chapters.Count);
+            Assert.AreEqual(1, chapters[0].GetChildMarkers<CLMarker>().Count);
+            Assert.AreEqual(1, chapters[0].GetChildMarkers<PMarker>().Count);
+            Assert.AreEqual(3, chapters[0].GetChildMarkers<VMarker>().Count);
         }
 
         /// <summary>
@@ -290,8 +321,8 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest, content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual("EXO", ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("EXO", ((TOC3Marker)document.Contents[4]).BookAbbreviation);
+            Assert.AreEqual("EXO", ((IDMarker)document.Hierarchies[0][0]).TextIdentifier);
+            Assert.AreEqual("EXO", ((TOC3Marker)document.Hierarchies[0][4]).BookAbbreviation);
         }
 
         /// <summary>
@@ -312,8 +343,8 @@ namespace BTTWriterLibTests
             IResourceContainer container = new TestResourceContainer(manifest, content, false);
             var document = BTTWriterLoader.CreateUSFMDocumentFromContainer(container, false);
 
-            Assert.AreEqual("EXO", ((IDMarker)document.Contents[0]).TextIdentifier);
-            Assert.AreEqual("EXO", ((TOC3Marker)document.Contents[4]).BookAbbreviation);
+            Assert.AreEqual("EXO", document.Hierarchies[0][0].As<IDMarker>().TextIdentifier);
+            Assert.AreEqual("EXO", document.Hierarchies[0][4].As<TOC3Marker>().BookAbbreviation);
         }
     }
 }

@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write     # Required for NuGet trusted publishing (OIDC)
+      contents: read
 
     steps:
     - name: Checkout repository
@@ -24,20 +27,16 @@ jobs:
     - name: Build
       run: dotnet build -c Release --no-restore
 
-    - name: Load secret
+    - name: Run tests
+      run: dotnet test -c Release --no-build --verbosity normal
+
+    - name: NuGet login (OIDC)
       if: contains( github.ref, 'refs/tags/v' )
-      uses: 1password/load-secrets-action@v1
+      id: login
+      uses: NuGet/login@v1
       with:
-          # Export loaded secrets as environment variables
-        export-env: true
-      env:
-        OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-        NUGET_TOKEN: "op://DevOps/nuget-push-token/credential"
+        user: ${{ secrets.NUGET_USER }}  # nuget.org profile name, NOT email
+
     - name: Push to Nuget if tagged
       if: contains( github.ref, 'refs/tags/v' )
-      run:  |
-        cd ./BTTWriterLib/bin/Release/ && \
-        PKG_NAME=$(ls *.nupkg) && \
-        dotnet nuget push $PKG_NAME -k $NUGET_TOKEN -s https://api.nuget.org/v3/index.json
-      env:
-        NUGET_TOKEN: ${{ env.NUGET_TOKEN }}
+      run: dotnet nuget push ./BTTWriterLib/bin/Release/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
